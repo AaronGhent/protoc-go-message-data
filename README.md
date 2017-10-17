@@ -43,6 +43,7 @@ cd ..
 export GOPATH="${HOME}/go"
 
 go get -u github.com/golang/protobuf/protoc-gen-go
+```
 
 ## Usage
 
