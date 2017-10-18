@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package pb;
+
+message IP {
+  // @pk: mac
+  string Address = 1;
+}
+
+message URL {
+  // @name: potato
+  // @pk: port
+  // @storage: json
+  string scheme = 1;
+  string url = 2;
+  int32 port = 3;
+}
