@@ -3,7 +3,7 @@ syntax = "proto3";
 package main;
 
 message IP {
-  // @pk: mac
+  // @pk: Address
   string Address = 1;
 }
 
