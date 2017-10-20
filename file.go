@@ -9,19 +9,20 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strings"
 )
 
 var (
 	rName       = regexp.MustCompile(`^//\s*@name:\s*(.*)$`)
 	rPrimaryKey = regexp.MustCompile(`^//\s*@pk:\s*(.*)$`)
-	rStorage = regexp.MustCompile(`^//\s*@storage:\s*(.*)$`)
+	rStorage    = regexp.MustCompile(`^//\s*@storage:\s*(.*)$`)
 	rProtoInput = regexp.MustCompile(`(?msU)(.*var fileDescriptor\d+ = \[\]byte{.*}).*`)
 )
 
 type MessageData struct {
 	Name       string
 	PrimaryKey string
-	Storage string
+	Storage    string
 }
 
 func fromComment(regex *regexp.Regexp, comment string) string {
@@ -42,6 +43,11 @@ func inputFileFindOrigEOF(contents []byte) []byte {
 
 func injectStaticStringFunction(contents []byte, name string, ret string, obj string) []byte {
 	return append(contents, []byte(fmt.Sprintf("\nfunc (m *%s) %s() string { return \"%s\"}\n", obj, name, ret))...)
+}
+
+// need to deal with returning type
+func injectGetStructDataFunction(contents []byte, name string, ret string, obj string) []byte {
+	return append(contents, []byte(fmt.Sprintf("\nfunc (m *%s) %s() string { return string(m.Get%s())}\n", obj, name, strings.Title(ret)))...)
 }
 
 func parseFile(inputPath string) (results map[string]MessageData, err error) {
@@ -131,8 +137,10 @@ func writeFile(inputPath string, results map[string]MessageData) (err error) {
 	for key, data := range results {
 		if data.PrimaryKey != "" {
 			contents = injectStaticStringFunction(contents, "GetMetaMessagePrimaryKey", data.PrimaryKey, key)
+			contents = injectGetStructDataFunction(contents, "GetMetaMessagePrimaryKeyData", data.PrimaryKey, key)
 		} else {
 			contents = injectStaticStringFunction(contents, "GetMetaMessagePrimaryKey", "ID", key)
+			contents = injectGetStructDataFunction(contents, "GetMetaMessagePrimaryKeyData", "ID", key)
 		}
 
 		if data.Name != "" {
