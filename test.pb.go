@@ -30,7 +30,7 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type IP struct {
-	// @pk: mac
+	// @pk: Address
 	Address string `protobuf:"bytes,1,opt,name=Address" json:"Address,omitempty"`
 }
 
@@ -100,14 +100,6 @@ var fileDescriptor0 = []byte{
 	0x00, 0xff, 0xff, 0xdb, 0xb8, 0xbe, 0x10, 0x7f, 0x00, 0x00, 0x00,
 }
 
-func (m *IP) GetMetaMessagePrimaryKey() string { return "mac"}
-
-func (m *IP) GetMetaMessagePrimaryKeyData() string { return string(m.GetMac())}
-
-func (m *IP) GetMetaMessageName() string { return "IP"}
-
-func (m *IP) GetMetaMessageStorage() string { return "protobuf"}
-
 func (m *URL) GetMetaMessagePrimaryKey() string { return "port"}
 
 func (m *URL) GetMetaMessagePrimaryKeyData() string { return string(m.GetPort())}
@@ -115,3 +107,11 @@ func (m *URL) GetMetaMessagePrimaryKeyData() string { return string(m.GetPort())
 func (m *URL) GetMetaMessageName() string { return "potato"}
 
 func (m *URL) GetMetaMessageStorage() string { return "json"}
+
+func (m *IP) GetMetaMessagePrimaryKey() string { return "Address"}
+
+func (m *IP) GetMetaMessagePrimaryKeyData() string { return string(m.GetAddress())}
+
+func (m *IP) GetMetaMessageName() string { return "IP"}
+
+func (m *IP) GetMetaMessageStorage() string { return "protobuf"}
